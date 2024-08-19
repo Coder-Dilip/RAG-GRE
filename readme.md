@@ -16,45 +16,25 @@ This Django project utilizes a large language model to create GRE-style practice
    ```bash
    python -m venv venv
    source venv/bin/activate
-
-Use code with caution.
-
-    Install dependencies:
-    Bash
-
-    pip install -r requirements.txt   
+   pip install -r requirements.txt   
 
 
-Use code with caution.
+
  
 
-    Set up your database (refer to Django documentation for details).
-    Configure your SECRET_KEY in the settings.py file.
+    
 
 Usage
 
-    Run the development server:
-    Bash
-
+Run the development server:
+    
+    ```bash
     python manage.py runserver
 
-    Use code with caution.
+   
 
-    Access the application in your web browser at http://127.0.0.1:8000/
+Access the application in your web browser at http://127.0.0.1:8000/
 
 Contributing
 
 Contributions are welcome! Please feel free to open a pull request with your changes.
-License
-
-This project is licensed under the MIT License (see LICENSE file for details).
-
-
-### Next Steps:
-1. **Copy** the Markdown content above.
-2. **Open** a text editor (like Notepad, Sublime Text, Visual Studio Code).
-3. **Paste** the content into the editor.
-4. **Save** the file as `README.md`.
-
-**Would you like to add more sections or details to your README?** 
-Let me know and I can update the Markdown content accordingly. 
