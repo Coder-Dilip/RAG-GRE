@@ -8,6 +8,7 @@ def index(req):
     client = Groq(
         api_key='',
     )
+    
     # Vocabulary groups
     vocab_groups = [
         {
