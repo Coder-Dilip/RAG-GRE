@@ -1,31 +1,33 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 import os
 from groq import Groq
 import random
 import re
+from django.contrib.auth import authenticate, login
+from .models import UserVocabulary
+
+
+def home(req):
+    user = authenticate(username='dilip', password='hp')
+    login(req, user)
+
+    print(req.user.username)
+    return render(req, 'home.html')
+
+import ast
 # Create your views here.
 def index(req):
     client = Groq(
         api_key='',
     )
+
+    userObj=UserVocabulary.objects.get(user=req.user)
+     
     
     # Vocabulary groups
-    vocab_groups = [
-        {
-            "group_name": "Anger",
-            "words": ["enrage", "fume", "infuriating", "ire", "irate"]
-        },
-        {
-            "group_name": "Inclination",
-            "words": ["predilection", "disposed", "affinity", "predisposition", "proclivity", "propensity", "aptitude"]
-        },
-        {
-            "group_name":"Prediction",
-            "words":["Augur","Prognosis","Presage", "Prescience","Anticipates", "Forecast","Foresight","Foretell","Foresee"]
-        }
-        # Add more vocabulary groups here
-    ]
-
+    vocab_groups =ast.literal_eval(userObj.vocab)
+    if len(vocab_groups)<3:
+        return redirect('/home')
         # Select a random vocabulary group for group1
     group1 = random.choice(vocab_groups)
 
@@ -132,3 +134,31 @@ def index(req):
     
     print(json_string)
     return render(req,'index.html',{'data':json_string})
+
+
+
+
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+
+import json
+from django.views.decorators.csrf import csrf_exempt
+
+from .models import UserVocabulary
+@csrf_exempt
+def save_vocab(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            vocab_groups = data.get('vocab_groups', [])
+            
+           
+            user_vocab, created = UserVocabulary.objects.update_or_create(
+                user=request.user,
+                defaults={'vocab': vocab_groups}
+            )
+            return JsonResponse({'status': 'success', 'message': 'Vocabulary groups saved!'})
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})

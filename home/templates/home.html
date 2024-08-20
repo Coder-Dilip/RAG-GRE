@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+   *{
+    scroll-behavior: smooth;
+   }
+</style>
+</head>
+<body style="display: flex;align-items:flex-start;justify-content: center;flex-direction: column;margin-left: 3%;">
+    <div class="imgcontainer">
+        <img class="background-gif" src="https://studentspace.org.uk/assets/images/student-space_illustrations_studying.png" alt="GIF Background">
+        <div class="content">
+            <h1>Practice Gre</h1>
+            <p id="description">List what you've learned and give the test</p>
+            <a href="#groupsContainer"><button id="description" style="margin-left: -1vw;padding: 10px 25px;background: black;color: white;border-radius: 5px;cursor: pointer;">Add Vocab</button></a>
+        </div> 
+    </div>
+    <br><br>
+  <a href="/">  <button style="padding: 15px 40px;border-radius: 5px;background-color: rgb(11, 202, 142);color: white;border: none;cursor: pointer;font-weight: bold;">Begin the test</button></a>
+  <p>You need at least 3 enabled vocab groups to start the test!</p>
+   <br><br>
+    <div id="message">
+<img style="height: 100px;width: auto;" src="https://png.pngtree.com/png-vector/20230105/ourmid/pngtree-book-icon-vector-image-png-image_6552370.png" alt="">
+<p>Add vocab first!</p>
+    </div>
+
+  
+    
+    <style>
+        body{
+            font-family: 'Montserrat', sans-serif;            
+
+        }
+        .container {
+            margin-top: 30px;
+            width: 96%;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+           
+        }
+        .group {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: white;
+            width: 230px;
+           
+
+           
+            
+        }
+        .words{
+            height: 120px;
+            overflow-y: auto;
+            scrollbar-width: thin; /* For Firefox */
+            scrollbar-color: #bdbdbd #ffffff; /* For Firefox */
+            border-radius: 4px;
+        }
+        .words::-webkit-scrollbar {
+    width: 5px; /* Width of the scrollbar */
+}
+
+.words::-webkit-scrollbar-track {
+    background: #e0e0e0; /* Background color of the track */
+    border-radius: 4px;
+}
+
+.words::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scrollbar thumb */
+    border-radius: 40px; /* Rounded corners for the thumb */
+}
+
+.words::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Darker color when hovering over the thumb */
+}
+        .group-title {
+          
+            padding: 8px;
+            margin-bottom: 10px;
+        
+            border-radius: 5px;
+            background: black;
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            width: 210px;
+        }
+        .word-input {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-bottom: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .button {
+            cursor: pointer;
+            color: white;
+            background-color: #ff9100;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        .button.secondary {
+            background-color: #28a745;
+        }
+        hr {
+            margin: 20px 0;
+            border: 0;
+            border-top: 1px solid #ddd;
+        }
+    #message{
+    display: none;
+    
+}
+        .imgcontainer {
+            position: relative;
+            width: 95vw;
+            height: 680px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+    
+        .background-gif {
+            width: 100%;
+            height: 100%;
+            object-fit:cover;
+            border-radius: 10px;
+        }
+    
+        .content {
+            position: absolute;
+            top: 28%;
+            left: 10%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: rgb(0, 0, 0);
+            text-align: center;
+        }
+
+       
+    
+        .content h1 {
+            margin-bottom: 10px;
+        }
+
+        #description{
+            margin-left: 23vw;
+            font-size: 1.6rem;
+            font-weight: bolder;
+        }
+    
+      #groupsContainer{
+        display: flex;
+        align-items:flex-start;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 10px;
+        height: 500px;
+        overflow-y: auto;
+      }
+     
+    </style>
+      <div class="container">
+        <h2>Add Vocabulary Groups</h2>
+        <div id="groupsContainer"></div>
+        <button class="button" onclick="addGroup()">+ Add Group</button>
+        <button class="button secondary" onclick="saveToLocalStorage()">Save to Vocab List</button>
+    </div>
+
+    <script>
+        // Load existing groups from local storage
+        document.addEventListener('DOMContentLoaded', () => {
+            const storedGroups = JSON.parse(localStorage.getItem('vocab_groups')) || [];
+            storedGroups.forEach(group => {
+                addGroup(group.group_name, group.words);
+            });
+        });
+
+        // Function to add a new group
+        function addGroup(groupName = '', words = []) {
+            const groupsContainer = document.getElementById('groupsContainer');
+            const groupDiv = document.createElement('div');
+            groupDiv.classList.add('group');
+            
+            // Create the input for the group name
+            const groupTitle = document.createElement('input');
+            groupTitle.type = 'text';
+            groupTitle.placeholder = 'Enter Group Name';
+            groupTitle.value = groupName;
+            groupTitle.classList.add('group-title');
+            
+            // Create the div to hold word inputs
+            const wordsContainer = document.createElement('div');
+            wordsContainer.classList.add('words')
+            // Create the word inputs
+            words.forEach(word => {
+                const wordInput = createWordInput(word);
+                wordsContainer.appendChild(wordInput);
+            });
+            
+            // Create the button to add more words
+            const addWordBtn = document.createElement('button');
+            addWordBtn.textContent = '+ Add Word';
+            addWordBtn.classList.add('button');
+            addWordBtn.style.background='violet'
+            addWordBtn.onclick = function() {
+                const newWordInput = createWordInput('');
+                wordsContainer.appendChild(newWordInput);
+            };
+            
+            // Append elements to the group div
+            groupDiv.appendChild(groupTitle);
+            groupDiv.appendChild(wordsContainer);
+            groupDiv.appendChild(addWordBtn);
+            
+            // Append the group div to the container
+            groupsContainer.appendChild(groupDiv);
+            
+            // Add a horizontal line to separate groups
+            groupsContainer.appendChild(document.createElement('hr'));
+        }
+
+        // Function to create a word input element
+        function createWordInput(value) {
+            const wordInput = document.createElement('input');
+            wordInput.type = 'text';
+            wordInput.placeholder = 'Enter a word';
+            wordInput.classList.add('word-input');
+            wordInput.value = value;
+            return wordInput;
+        }
+
+        // Function to save groups to local storage
+        function saveToLocalStorage() {
+            const groups = [];
+            const groupsContainer = document.getElementById('groupsContainer');
+            const groupDivs = groupsContainer.getElementsByClassName('group');
+
+            for (let groupDiv of groupDivs) {
+                const groupName = groupDiv.querySelector('.group-title').value.trim();
+                const wordInputs = groupDiv.getElementsByClassName('word-input');
+                
+                const words = [];
+                for (let wordInput of wordInputs) {
+                    const wordValue = wordInput.value.trim();
+                    if (wordValue) {
+                        words.push(wordValue);
+                    }
+                }
+
+                if (groupName && words.length > 0) {
+                    groups.push({ group_name: groupName, words: words });
+                }
+            }
+
+            if (groups.length > 0) {
+                localStorage.setItem('vocab_groups', JSON.stringify(groups));
+                sendDataToBackend()
+                alert('Vocabulary groups saved!');
+              
+            } else {
+                alert('Please add at least one group and one word.');
+            }
+        }
+
+
+        function sendDataToBackend() {
+        const storedGroups = JSON.parse(localStorage.getItem('vocab_groups')) || [];
+        
+        fetch('/save-vocab/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+               
+            },
+            body: JSON.stringify({ vocab_groups: storedGroups })
+        })
+        .then(response => response.json())
+        .then(data => {
+          
+              window.location.reload()
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error sending data to backend.');
+        });
+    }
+    </script>
+    <script>
+        if (!localStorage.getItem('vocab_groups')) {
+document.getElementById('message').style.display='flex'
+document.getElementById('message').style.alignItems='center'
+document.getElementById('message').style.justifyContent='center'
+document.getElementById('message').style.flexDirection='column'
+        }
+    </script>
+</body>
+</html>
